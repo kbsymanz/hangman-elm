@@ -126,7 +126,4 @@ update msg model =
                         ( model, Cmd.none )
 
 
-subscriptions model =
-    Sub.batch
-        [ Keyboard.presses Keypress
-        ]
+

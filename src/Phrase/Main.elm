@@ -54,5 +54,15 @@ main =
             { init = modelWithEffects
             , view = view
             , update = update
-            , subscriptions = Phrase.Update.subscriptions
+            , subscriptions = subscriptions
             }
+
+
+
+--subscriptions : Model -> Sub Msg
+
+
+subscriptions model =
+    Sub.batch
+        [ Keyboard.presses Keypress
+        ]
