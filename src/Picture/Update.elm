@@ -14,7 +14,7 @@ import Picture.Model exposing (Model)
 
 type Msg
     = NoOp
-    | Init
+    | InitGame
     | Incorrect Int
     | WindowResize Window.Size
 
@@ -30,10 +30,11 @@ update msg model =
         NoOp ->
             ( model, Cmd.none )
 
-        Init ->
+        InitGame ->
             ( model, getWindowSize )
 
         Incorrect _ ->
+            -- Incorrect is used for testing the Picture component stand-alone.
             ( { model | incorrectGuesses = model.incorrectGuesses + 1 }, Cmd.none )
 
         WindowResize size ->

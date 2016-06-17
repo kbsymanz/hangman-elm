@@ -6,14 +6,17 @@ import Html.App as Html
 import Html.Attributes as HA
 import Html.Events as HE
 import Keyboard
+import Window
 
 
 -- LOCAL IMPORTS
 
-import Phrase.Main as Phrase
 import Phrase.Model as Phrase
 import Phrase.Update as Phrase
 import Phrase.View as Phrase
+import Picture.Model as Picture
+import Picture.Update as Picture
+import Picture.View as Picture
 
 
 main =
@@ -35,6 +38,8 @@ type alias Model =
     , allowedIncorrectGuesses : Int
     , incorrectGuesses : Int
     , correctGuesses : Int
+    , windowWidth : Int
+    , windowHeight : Int
     , gameStatus : GameStatus
     }
 
@@ -46,6 +51,8 @@ initModel =
     , allowedIncorrectGuesses = 1
     , incorrectGuesses = 0
     , correctGuesses = 0
+    , windowWidth = 0
+    , windowHeight = 0
     , gameStatus = InProcess
     }
 
@@ -63,14 +70,24 @@ type GameStatus
 type Msg
     = NoOp
     | PhraseMsg Phrase.Msg
+    | PictureMsg Picture.Msg
     | NewGame
 
 
 initGame : ( Model, Cmd Msg )
 initGame =
-    Phrase.InitGame "This is another test" 7
-        |> PhraseMsg
-        |> flip update initModel
+    let
+        ( phrModel, phrCmd ) =
+            Phrase.InitGame "This is another test" 7
+                |> PhraseMsg
+                |> flip update initModel
+
+        ( picModel, picCmd ) =
+            Picture.InitGame
+                |> PictureMsg
+                |> flip update phrModel
+    in
+        ( picModel, Cmd.batch [ phrCmd, picCmd ] )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -94,6 +111,13 @@ update msg model =
                         phrModel
             in
                 ( newModel, Cmd.map PhraseMsg phrCmd )
+
+        PictureMsg msg ->
+            let
+                ( picModel, picCmd ) =
+                    Picture.update msg model
+            in
+                ( picModel, Cmd.map PictureMsg picCmd )
 
         NewGame ->
             initGame
@@ -143,16 +167,22 @@ viewGameOver model =
 
 view : Model -> Html Msg
 view model =
-    Html.section []
-        [ Html.div []
-            [ Html.h1 []
-                [ Html.text "Hangman" ]
-            , Html.div []
-                [ Html.text "Picture goes here" ]
-            , Html.map PhraseMsg (Phrase.view model)
-            , Html.map identity (viewGameOver model)
+    let
+        marginStyle =
+            HA.style [ "margin" => "20px" ]
+
+    in
+        Html.section []
+            [ Html.div []
+                [ Html.h1 [ marginStyle ]
+                    [ Html.text "Hangman" ]
+                , Html.div
+                    [ marginStyle ]
+                    [ Html.map PictureMsg (Picture.view model) ]
+                , Html.map PhraseMsg (Phrase.view model)
+                , Html.map identity (viewGameOver model)
+                ]
             ]
-        ]
 
 
 
@@ -164,7 +194,10 @@ subscriptions model =
     let
         subs =
             if model.gameStatus == InProcess then
-                Sub.map PhraseMsg (Keyboard.presses Phrase.Keypress)
+                Sub.batch
+                    [ Sub.map PhraseMsg (Keyboard.presses Phrase.Keypress)
+                    , Sub.map PictureMsg (Window.resizes Picture.WindowResize)
+                    ]
             else
                 Sub.none
     in
