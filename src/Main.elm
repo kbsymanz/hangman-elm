@@ -170,14 +170,12 @@ view model =
     let
         marginStyle =
             HA.style [ "margin" => "20px" ]
-
     in
         Html.section []
             [ Html.div []
                 [ Html.h1 [ marginStyle ]
                     [ Html.text "Hangman" ]
-                , Html.div
-                    [ marginStyle ]
+                , Html.div [ marginStyle ]
                     [ Html.map PictureMsg (Picture.view model) ]
                 , Html.map PhraseMsg (Phrase.view model)
                 , Html.map identity (viewGameOver model)

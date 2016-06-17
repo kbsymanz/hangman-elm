@@ -30,20 +30,21 @@ numLettersLeft letters =
 {-| Searches the list of Letters for a match against the Char
     passed, updates any matching Letters, and returns a tuple
     signifying if there were any matches and the new List
-    of Letters.
+    of Letters. The match is done with case insensitivity.
 -}
 updateLetters : Char -> List Letter -> ( Bool, List Letter )
 updateLetters c letters =
     let
         found =
             List.map .char letters
-                |> List.any ((==) c)
+                |> List.map Char.toLower
+                |> List.any ((==) (Char.toLower c))
 
         newLetters =
             letters
                 |> List.map
                     (\ltr ->
-                        if ltr.char == c then
+                        if Char.toLower ltr.char == Char.toLower c then
                             { ltr | guessed = Guessed }
                         else
                             ltr
@@ -102,7 +103,6 @@ update msg model =
                         ( model.correctGuesses, model.incorrectGuesses )
                     else
                         ( model.correctGuesses, model.incorrectGuesses + 1 )
-
             in
                 ( { model
                     | letters = letters
@@ -111,5 +111,3 @@ update msg model =
                   }
                 , Cmd.none
                 )
-
-
