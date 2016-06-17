@@ -8,7 +8,7 @@ import String
 
 -- LOCAL IMPORTS
 
-import Phrase.Model exposing (Model, Letter, GameStatus(..), LetterStatus(..))
+import Phrase.Model exposing (Model, Letter, LetterStatus(..))
 
 
 type Msg
@@ -103,27 +103,13 @@ update msg model =
                     else
                         ( model.correctGuesses, model.incorrectGuesses + 1 )
 
-                gameFinished =
-                    if incorrect >= model.allowedIncorrectGuesses then
-                        Lost
-                    else if numLettersLeft letters == 0 then
-                        Won
-                    else
-                        InProcess
             in
-                case model.gameStatus of
-                    InProcess ->
-                        ( { model
-                            | letters = letters
-                            , incorrectGuesses = incorrect
-                            , correctGuesses = correct
-                            , gameStatus = gameFinished
-                          }
-                        , Cmd.none
-                        )
-
-                    _ ->
-                        ( model, Cmd.none )
-
+                ( { model
+                    | letters = letters
+                    , incorrectGuesses = incorrect
+                    , correctGuesses = correct
+                  }
+                , Cmd.none
+                )
 
 

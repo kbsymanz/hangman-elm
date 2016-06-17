@@ -18,19 +18,27 @@ module Phrase.Main exposing (..)
     x. Consider combining the gameFinished field with the win/lose field.
     x. Display "You WON!" or "Sorry, you lost" at the end.
     x. Do not increment correctly guessed for a letter that is already guessed.
+    x. Locate GameStatus in the top-level module along with decision logic.
+    x. Solve how to tell from top module if all letters have been guessed.
+    x. Remove gameStatus field from Phrase component.
+    x. Remove InProcess handling distinction in Phrase.Update.update
+    x. Turn off keyboard subscription when game is over.
+    x. Fix border of phrase view that cuts off bottom of letters.
+    x. Get phrase view to handle wrapping of letters on multiple lines.
+    x. Provide button for new game in top-level Main view.
+    6. Break out the top-level view functions into their own module.
+    7. Find a way so that space bar does not scroll the screen.
 -}
 
 import Dict exposing (Dict)
 import Html exposing (Html)
 import Html.App as Html
-import Html.Events exposing (onClick)
 import Keyboard
-import String
 
 
 -- LOCAL IMPORTS
 
-import Phrase.Model exposing (Model, GameStatus(..))
+import Phrase.Model exposing (Model)
 import Phrase.Update exposing (update, Msg(..))
 import Phrase.View exposing (view)
 
@@ -44,7 +52,6 @@ main =
             , allowedIncorrectGuesses = 1
             , incorrectGuesses = 0
             , correctGuesses = 0
-            , gameStatus = InProcess
             }
 
         modelWithEffects =

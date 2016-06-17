@@ -8,7 +8,7 @@ import String
 
 -- LOCAL IMPORTS
 
-import Phrase.Model exposing (Model, Letter, GameStatus(..), LetterStatus(..))
+import Phrase.Model exposing (Model, Letter, LetterStatus(..))
 import Phrase.Update exposing (..)
 
 
@@ -27,6 +27,7 @@ outerDiv =
         [ "margin" => "20px"
         , "border" => "2px solid #e9e9e9"
         , "padding" => "10px"
+        , "padding-bottom" => "30px"
         ]
 
 
@@ -34,28 +35,6 @@ letterDiv : H.Attribute a
 letterDiv =
     HA.style
         [ "margin-top" => "20px"
-        ]
-
-
-gameOverDiv : H.Attribute a
-gameOverDiv =
-    HA.style
-        [ "font-size" => "200%"
-        , "font-weight" => "bold"
-        , "color" => "black"
-        , "margin" => "10px 0"
-        , "padding-top" => "20px"
-        ]
-
-
-gameNotOverDiv : H.Attribute a
-gameNotOverDiv =
-    HA.style
-        [ "font-size" => "200%"
-        , "font-weight" => "bold"
-        , "color" => "white"
-        , "margin" => "10px 0"
-        , "padding-top" => "20px"
         ]
 
 
@@ -67,6 +46,7 @@ letterStyle =
         , "padding" => "10px"
         , "margin" => "10px 5px"
         , "border-bottom" => "2px solid black"
+        , "line-height" => "3.5"
         ]
 
 
@@ -127,17 +107,6 @@ view model =
     let
         allowedInc =
             toString model.allowedIncorrectGuesses
-
-        ( gameOverStyle, gameOverMsg ) =
-            case model.gameStatus of
-                InProcess ->
-                    ( gameNotOverDiv, "" )
-
-                Won ->
-                    ( gameOverDiv, " - You WON!" )
-
-                Lost ->
-                    ( gameOverDiv, " - sorry, you lost" )
     in
         H.div [ outerDiv ]
             [ H.div [ statsDiv ]
@@ -148,6 +117,4 @@ view model =
                 ]
             , H.div [ letterDiv ]
                 (List.map viewLetter model.letters)
-            , H.div [ gameOverStyle ]
-                [ H.text ("Game Over" ++ " " ++ gameOverMsg) ]
             ]

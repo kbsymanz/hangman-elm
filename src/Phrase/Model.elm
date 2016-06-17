@@ -10,19 +10,12 @@ type alias Model a =
         , allowedIncorrectGuesses : Int
         , incorrectGuesses : Int
         , correctGuesses : Int
-        , gameStatus : GameStatus
     }
 
 
 type LetterStatus
     = Guessed
     | Unguessed
-
-
-type GameStatus
-    = InProcess
-    | Won
-    | Lost
 
 
 type alias Letter =
