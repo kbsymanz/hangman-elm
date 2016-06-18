@@ -17,6 +17,8 @@ import Phrase.View as Phrase
 import Picture.Model as Picture
 import Picture.Update as Picture
 import Picture.View as Picture
+import Words.Model as Words
+import Words.Update as Words
 
 
 main =
@@ -48,7 +50,7 @@ initModel : Model
 initModel =
     { phrase = ""
     , letters = []
-    , allowedIncorrectGuesses = 1
+    , allowedIncorrectGuesses = 7
     , incorrectGuesses = 0
     , correctGuesses = 0
     , windowWidth = 0
@@ -71,23 +73,20 @@ type Msg
     = NoOp
     | PhraseMsg Phrase.Msg
     | PictureMsg Picture.Msg
+    | WordsMsg Words.Msg
     | NewGame
 
 
 initGame : ( Model, Cmd Msg )
 initGame =
     let
-        ( phrModel, phrCmd ) =
-            Phrase.InitGame "This is another test" 7
-                |> PhraseMsg
+        ( wrdsModel, wrdsCmd ) =
+            Words.Init
+                |> WordsMsg
                 |> flip update initModel
 
-        ( picModel, picCmd ) =
-            Picture.InitGame
-                |> PictureMsg
-                |> flip update phrModel
     in
-        ( picModel, Cmd.batch [ phrCmd, picCmd ] )
+        ( wrdsModel, Cmd.batch [ wrdsCmd ] )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -102,15 +101,27 @@ update msg model =
                     Phrase.update msg model
 
                 -- Set the gameStatus field.
-                newModel =
+                statusModel =
                     if phrModel.incorrectGuesses >= phrModel.allowedIncorrectGuesses then
                         { phrModel | gameStatus = Lost }
                     else if Phrase.numLettersLeft phrModel.letters == 0 then
                         { phrModel | gameStatus = Won }
                     else
                         phrModel
+
+                ( newModel, newCmd ) =
+                    case msg of
+                        Phrase.InitDone ->
+                            -- The Phrase component is done initializing, now
+                            -- initialize the Picture component.
+                            Picture.Init
+                                |> PictureMsg
+                                |> flip update statusModel
+
+                        _ ->
+                            ( statusModel, Cmd.map PhraseMsg phrCmd )
             in
-                ( newModel, Cmd.map PhraseMsg phrCmd )
+                ( newModel, newCmd )
 
         PictureMsg msg ->
             let
@@ -118,6 +129,25 @@ update msg model =
                     Picture.update msg model
             in
                 ( picModel, Cmd.map PictureMsg picCmd )
+
+        WordsMsg msg ->
+            let
+                ( wrdsModel, wrdsCmd ) =
+                    Words.update msg model
+
+                ( newModel, newCmd ) =
+                    case msg of
+                        Words.InitDone ->
+                            -- The Words component is done initializing, now
+                            -- initialize the Phrase component.
+                            Phrase.Init wrdsModel.phrase 7
+                                |> PhraseMsg
+                                |> flip update wrdsModel
+
+                        _ ->
+                            ( wrdsModel, Cmd.map WordsMsg wrdsCmd )
+            in
+                ( newModel, newCmd )
 
         NewGame ->
             initGame

@@ -55,7 +55,7 @@ main =
             }
 
         modelWithEffects =
-            update (InitGame "This is a Test" 7) initModel
+            update (Init "This is a Test" 7) initModel
     in
         Html.program
             { init = modelWithEffects

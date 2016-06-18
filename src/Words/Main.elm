@@ -13,7 +13,7 @@ import Words.Update as Words exposing (Msg(..))
 
 main =
     Html.program
-        { init = Words.update GenWord Words.initialModel
+        { init = Words.update Init Words.initialModel
         , view = view
         , update = Words.update
         , subscriptions = subscriptions
@@ -25,9 +25,9 @@ main =
 view : Model a -> Html Msg
 view model =
     Html.div []
-        [ Html.text model.nextWord ]
+        [ Html.text model.phrase ]
 
 
 subscriptions : Model a -> Sub Msg
 subscriptions model =
-    Time.every Time.second (always GenWord)
+    Time.every Time.second (always Init)

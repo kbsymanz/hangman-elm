@@ -4,6 +4,7 @@ import Char
 import Keyboard
 import Set
 import String
+import Task
 
 
 -- LOCAL IMPORTS
@@ -12,8 +13,9 @@ import Phrase.Model exposing (Model, Letter, LetterStatus(..))
 
 
 type Msg
-    = InitGame String Int
+    = Init String Int
     | Keypress Keyboard.KeyCode
+    | InitDone
 
 
 {-| Return the number of letters that are left unguessed.
@@ -70,19 +72,26 @@ initLetters phrase =
             )
 
 
+doInitDone : Cmd Msg
+doInitDone =
+    Task.perform (always InitDone) (always InitDone) (Task.succeed "")
+
+
 update : Msg -> Model a -> ( Model a, Cmd Msg )
 update msg model =
     case msg of
-        InitGame phrase allowedIncorrectGuesses ->
-            ( { model
-                | phrase = phrase
-                , letters = initLetters phrase
-                , allowedIncorrectGuesses = allowedIncorrectGuesses
-                , incorrectGuesses = 0
-                , correctGuesses = 0
-              }
-            , Cmd.none
-            )
+        Init phrase allowedIncorrectGuesses ->
+            let
+                newModel =
+                    { model
+                        | phrase = phrase
+                        , letters = initLetters phrase
+                        , allowedIncorrectGuesses = allowedIncorrectGuesses
+                        , incorrectGuesses = 0
+                        , correctGuesses = 0
+                    }
+            in
+                ( newModel, doInitDone )
 
         Keypress kc ->
             let
@@ -111,3 +120,6 @@ update msg model =
                   }
                 , Cmd.none
                 )
+
+        InitDone ->
+            ( model, Cmd.none )

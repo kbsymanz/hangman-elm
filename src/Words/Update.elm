@@ -2,6 +2,8 @@ module Words.Update exposing (..)
 
 import Array
 import Random
+import Task
+
 
 -- LOCAL IMPORTS
 
@@ -9,18 +11,20 @@ import Words.Model as Words exposing (Model, words)
 
 
 type Msg
-    = NoOp
-    | GenWord
+    = Init
     | NewWord Int
+    | InitDone
+
+
+doInitDone : Cmd Msg
+doInitDone =
+    Task.perform (always InitDone) (always InitDone) (Task.succeed "")
 
 
 update : Msg -> Model a -> ( Model a, Cmd Msg )
 update msg model =
     case msg of
-        NoOp ->
-            ( model, Cmd.none )
-
-        GenWord ->
+        Init ->
             ( model, Random.generate NewWord (Random.int 0 (List.length words)) )
 
         NewWord idx ->
@@ -36,6 +40,9 @@ update msg model =
                             w
 
                         Nothing ->
-                            model.nextWord
+                            model.phrase
             in
-                ( { model | nextWord = word }, Cmd.none )
+                ( { model | phrase = word }, doInitDone )
+
+        InitDone ->
+            ( model, Cmd.none )

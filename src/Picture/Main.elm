@@ -24,7 +24,7 @@ main =
             }
 
         modelWithEffects =
-            update InitGame initModel
+            update Init initModel
     in
         Html.program
             { init = modelWithEffects

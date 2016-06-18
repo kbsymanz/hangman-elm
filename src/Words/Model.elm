@@ -5,13 +5,13 @@ import Random
 
 type alias Model a =
     { a
-        | nextWord : String
+        | phrase : String
     }
 
 
 initialModel : Model {}
 initialModel =
-    { nextWord = "" }
+    { phrase = "" }
 
 
 words : List String
