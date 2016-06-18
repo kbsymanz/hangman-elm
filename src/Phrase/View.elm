@@ -63,10 +63,11 @@ letterStyleGuessed : H.Attribute a
 letterStyleGuessed =
     HA.style
         [ "background" => "#e9e9e9"
+        , "color" => "green"
         , "padding" => "10px"
         , "margin" => "10px 5px"
         , "border-bottom" => "10px solid green"
-        , "color" => "green"
+        , "line-height" => "3.5"
         ]
 
 
