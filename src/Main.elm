@@ -40,6 +40,7 @@ type alias Model =
     , allowedIncorrectGuesses : Int
     , incorrectGuesses : Int
     , correctGuesses : Int
+    , incorrectLettersGuessed : List Char
     , windowWidth : Int
     , windowHeight : Int
     , gameStatus : GameStatus
@@ -53,6 +54,7 @@ initModel =
     , allowedIncorrectGuesses = 7
     , incorrectGuesses = 0
     , correctGuesses = 0
+    , incorrectLettersGuessed = []
     , windowWidth = 0
     , windowHeight = 0
     , gameStatus = InProcess

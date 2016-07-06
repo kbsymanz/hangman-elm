@@ -10,6 +10,7 @@ type alias Model a =
         , allowedIncorrectGuesses : Int
         , incorrectGuesses : Int
         , correctGuesses : Int
+        , incorrectLettersGuessed : List Char
     }
 
 

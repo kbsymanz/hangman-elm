@@ -1,8 +1,10 @@
 module Phrase.View exposing (..)
 
+import Char
 import Html as H exposing (Html)
 import Html.Attributes as HA
 import Html.Events as HE exposing (onClick)
+import Set
 import String
 
 
@@ -115,6 +117,13 @@ view model =
                     [ H.text ("You are allowed " ++ allowedInc ++ " misses. Guessing incorrectly counts as a miss.") ]
                 , viewStat "Incorrectly Guessed" (toString model.incorrectGuesses)
                 , viewStat "Correctly Guessed" (toString model.correctGuesses)
+                , List.map Char.toUpper model.incorrectLettersGuessed
+                    |> List.map String.fromChar
+                    |> Set.fromList
+                    |> Set.toList
+                    |> List.sort
+                    |> String.join " "
+                    |> viewStat "Incorrect Letters"
                 ]
             , H.div [ letterDiv ]
                 (List.map viewLetter model.letters)

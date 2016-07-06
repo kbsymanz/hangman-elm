@@ -112,11 +112,18 @@ update msg model =
                         ( model.correctGuesses, model.incorrectGuesses )
                     else
                         ( model.correctGuesses, model.incorrectGuesses + 1 )
+
+                incorrectLettersGuessed =
+                    if not found then
+                        model.incorrectLettersGuessed ++ [(Char.fromCode kc)]
+                    else
+                        model.incorrectLettersGuessed
             in
                 ( { model
                     | letters = letters
                     , incorrectGuesses = incorrect
                     , correctGuesses = correct
+                    , incorrectLettersGuessed = incorrectLettersGuessed
                   }
                 , Cmd.none
                 )
