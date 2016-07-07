@@ -117,10 +117,7 @@ view model =
                     [ H.text ("You are allowed " ++ allowedInc ++ " misses. Guessing incorrectly counts as a miss.") ]
                 , viewStat "Incorrectly Guessed" (toString model.incorrectGuesses)
                 , viewStat "Correctly Guessed" (toString model.correctGuesses)
-                , List.map Char.toUpper model.incorrectLettersGuessed
-                    |> List.map String.fromChar
-                    |> Set.fromList
-                    |> Set.toList
+                , List.map String.fromChar model.incorrectLettersGuessed
                     |> List.sort
                     |> String.join " "
                     |> viewStat "Incorrect Letters"

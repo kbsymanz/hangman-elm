@@ -95,29 +95,46 @@ update msg model =
 
         Keypress kc ->
             let
+                char =
+                    Char.fromCode kc
+
+                upperChar =
+                    Char.toUpper char
+
                 origNumLeft =
                     numLettersLeft model.letters
 
+                origIncorrect =
+                    List.length model.incorrectLettersGuessed
+
                 ( found, letters ) =
-                    updateLetters (Char.fromCode kc) model.letters
+                    updateLetters char model.letters
 
                 newNumLeft =
                     numLettersLeft letters
 
                 -- Account for user pressing correct letter more than once.
-                ( correct, incorrect ) =
+                correct =
                     if found && newNumLeft < origNumLeft then
-                        ( model.correctGuesses + 1, model.incorrectGuesses )
-                    else if found then
-                        ( model.correctGuesses, model.incorrectGuesses )
+                        model.correctGuesses + 1
                     else
-                        ( model.correctGuesses, model.incorrectGuesses + 1 )
+                        model.correctGuesses
 
                 incorrectLettersGuessed =
                     if not found then
-                        model.incorrectLettersGuessed ++ [(Char.fromCode kc)]
+                        model.incorrectLettersGuessed
+                            ++ [ upperChar ]
+                            |> Set.fromList
+                            |> Set.toList
                     else
                         model.incorrectLettersGuessed
+
+                -- Only count new incorrect letters as incorrect.
+                incorrect =
+                    if List.length incorrectLettersGuessed > origIncorrect then
+                        model.incorrectGuesses + 1
+                    else
+                        model.incorrectGuesses
             in
                 ( { model
                     | letters = letters
