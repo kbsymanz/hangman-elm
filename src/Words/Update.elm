@@ -25,7 +25,7 @@ update : Msg -> Model a -> ( Model a, Cmd Msg )
 update msg model =
     case msg of
         Init ->
-            ( model, Random.generate NewWord (Random.int 0 (List.length words)) )
+            ( model, Random.generate NewWord (Random.int 0 ((List.length words) - 1)) )
 
         NewWord idx ->
             let
