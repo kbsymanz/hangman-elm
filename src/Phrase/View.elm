@@ -90,8 +90,12 @@ viewStat statName statValue =
 viewLetter : Letter -> Html a
 viewLetter ltr =
     let
+        -- Do not reveal letter if not guessed.
         char =
-            .char ltr
+            if .guessed ltr /= Guessed then
+                ' '
+            else
+                .char ltr
 
         style =
             if .guessed ltr == Guessed && char /= ' ' then
