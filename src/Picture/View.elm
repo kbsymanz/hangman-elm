@@ -4,6 +4,7 @@ import Html as H exposing (Html)
 import String
 import Svg as S
 import Svg.Attributes as S
+import Time
 
 
 -- LOCAL IMPORTS
@@ -13,6 +14,22 @@ import Picture.Update exposing (Msg(..))
 
 
 -- VIEW
+
+
+moon : Time.Time -> Html a
+moon step =
+    S.g
+        []
+        [ S.circle
+            [ S.cx (toString (step - 40))
+            , S.cy "30"
+            , S.r "20"
+            , S.stroke "white"
+            , S.fill "white"
+            , S.strokeWidth "4"
+            ]
+            []
+        ]
 
 
 gallows : Html a
@@ -94,6 +111,7 @@ head =
         ]
         []
 
+
 face : Html a
 face =
     S.svg
@@ -109,31 +127,36 @@ face =
             , S.y1 "10"
             , S.x2 "13"
             , S.y2 "13"
-            ] []
+            ]
+            []
         , S.line
             [ S.x1 "13"
             , S.y1 "10"
             , S.x2 "7"
             , S.y2 "13"
-            ] []
+            ]
+            []
         , S.line
             [ S.x1 "17"
             , S.y1 "10"
             , S.x2 "23"
             , S.y2 "13"
-            ] []
+            ]
+            []
         , S.line
             [ S.x1 "23"
             , S.y1 "10"
             , S.x2 "17"
             , S.y2 "13"
-            ] []
+            ]
+            []
         , S.ellipse
             [ S.cx "15"
             , S.cy "20"
             , S.rx "3"
             , S.ry "5"
-            ] []
+            ]
+            []
         ]
 
 
@@ -149,6 +172,7 @@ body =
         ]
         []
 
+
 leftArm : Html a
 leftArm =
     S.line
@@ -160,6 +184,7 @@ leftArm =
         , S.stroke "white"
         ]
         []
+
 
 rightArm : Html a
 rightArm =
@@ -186,6 +211,7 @@ leftLeg =
         ]
         []
 
+
 rightLeg : Html a
 rightLeg =
     S.line
@@ -197,6 +223,7 @@ rightLeg =
         , S.stroke "white"
         ]
         []
+
 
 intToPx : Int -> String
 intToPx int =
@@ -213,10 +240,10 @@ view model =
             svgWidth
 
         bodyParts =
-            [ gallows, head, body, leftArm, rightArm, leftLeg, rightLeg, face ]
+            [ (moon model.animationStep), gallows, head, body, leftArm, rightArm, leftLeg, rightLeg, face ]
 
         shownBody =
-            List.take (model.incorrectGuesses + 1) bodyParts
+            List.take (model.incorrectGuesses + 2) bodyParts
     in
         S.svg
             [ S.width (intToPx svgWidth)

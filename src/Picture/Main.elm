@@ -1,5 +1,6 @@
 module Picture.Main exposing (..)
 
+import AnimationFrame as AF
 import Html exposing (Html)
 import Html.App as Html
 import Keyboard exposing (presses)
@@ -21,6 +22,7 @@ main =
             , correctGuesses = 0
             , windowWidth = 0
             , windowHeight = 0
+            , animationStep = 0
             }
 
         modelWithEffects =
@@ -38,4 +40,5 @@ subscriptions model =
     Sub.batch
         [ Keyboard.presses Incorrect
         , Window.resizes WindowResize
+        , AF.diffs AnimationStep
         ]

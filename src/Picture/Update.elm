@@ -1,6 +1,7 @@
 module Picture.Update exposing (..)
 
 import Task
+import Time
 import Window
 
 
@@ -18,6 +19,7 @@ type Msg
     | Incorrect Int
     | WindowResize Window.Size
     | InitDone
+    | AnimationStep Time.Time
 
 
 getWindowSize : Cmd Msg
@@ -45,6 +47,15 @@ update msg model =
                     { model | windowWidth = size.width, windowHeight = size.height }
             in
                 update InitDone newModel
+
+        AnimationStep ms ->
+            let
+                newStep =
+                    if model.animationStep + ms > 380
+                    then ms
+                    else model.animationStep + (ms / 100)
+            in
+                ( { model | animationStep = newStep }, Cmd.none )
 
         InitDone ->
             ( model, Cmd.none )

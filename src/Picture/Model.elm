@@ -1,5 +1,6 @@
 module Picture.Model exposing (..)
 
+import Time
 
 type alias Model a =
     { a
@@ -8,6 +9,7 @@ type alias Model a =
         , correctGuesses : Int
         , windowWidth : Int
         , windowHeight : Int
+        , animationStep : Time.Time
     }
 
 
@@ -18,4 +20,5 @@ initModel =
     , correctGuesses = 0
     , windowWidth = 0
     , windowHeight = 0
+    , animationStep = 0.0
     }

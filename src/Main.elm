@@ -1,11 +1,13 @@
 module Main exposing (..)
 
+import AnimationFrame as AF
 import Dict exposing (Dict)
 import Html exposing (Html, div)
 import Html.App as Html
 import Html.Attributes as HA
 import Html.Events as HE
 import Keyboard
+import Time
 import Window
 
 
@@ -44,6 +46,7 @@ type alias Model =
     , windowWidth : Int
     , windowHeight : Int
     , gameStatus : GameStatus
+    , animationStep : Time.Time
     }
 
 
@@ -58,6 +61,7 @@ initModel =
     , windowWidth = 0
     , windowHeight = 0
     , gameStatus = InProcess
+    , animationStep = 0.0
     }
 
 
@@ -227,6 +231,7 @@ subscriptions model =
                 Sub.batch
                     [ Sub.map PhraseMsg (Keyboard.presses Phrase.Keypress)
                     , Sub.map PictureMsg (Window.resizes Picture.WindowResize)
+                    , Sub.map PictureMsg (AF.diffs Picture.AnimationStep)
                     ]
             else
                 Sub.none
