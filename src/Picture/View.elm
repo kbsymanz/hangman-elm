@@ -18,18 +18,73 @@ import Picture.Update exposing (Msg(..))
 
 moon : Time.Time -> Html a
 moon step =
-    S.g
-        []
-        [ S.circle
-            [ S.cx (toString (step - 40))
-            , S.cy "30"
-            , S.r "20"
-            , S.stroke "white"
-            , S.fill "white"
-            , S.strokeWidth "4"
-            ]
+    let
+        -- Yes, this is a horrible way to do this. Knowing math would be good :)
+        ( leftPupilCx, leftPupilCy ) =
+            if step < 65
+            then (step - 47, 28)
+            else if step < 115
+                then (step - 48, 28.5)
+                else if step < 165
+                    then (step - 49, 29)
+                    else if step < 215
+                        then (step - 50, 28.5)
+                        else if step < 265
+                            then (step - 51, 28)
+                            else (step - 52, 27.5)
+        ( rightPupilCx, rightPupilCy ) =
+            ( leftPupilCx + 20, leftPupilCy )
+    in
+        S.g
             []
-        ]
+            [ S.circle
+                [ S.cx (toString (step - 40))
+                , S.cy "30"
+                , S.r "20"
+                , S.stroke "white"
+                , S.fill "white"
+                , S.strokeWidth "4"
+                ]
+                []
+            -- Left eye.
+            , S.circle
+                [ S.cx (toString (step - 50))
+                , S.cy "27"
+                , S.r "6"
+                , S.stroke "black"
+                , S.strokeWidth "1"
+                ]
+                []
+            -- Left pupil.
+            , S.circle
+                [ S.cx (toString leftPupilCx)
+                , S.cy (toString leftPupilCy)
+                , S.r "2"
+                , S.stroke "white"
+                , S.fill "red"
+                , S.strokeWidth "1"
+                ]
+                []
+            -- Right eye.
+            , S.circle
+                [ S.cx (toString (step - 30))
+                , S.cy "27"
+                , S.r "6"
+                , S.stroke "black"
+                , S.strokeWidth "1"
+                ]
+                []
+            -- Right pupil.
+            , S.circle
+                [ S.cx (toString rightPupilCx)
+                , S.cy (toString rightPupilCy)
+                , S.r "2"
+                , S.stroke "white"
+                , S.fill "red"
+                , S.strokeWidth "1"
+                ]
+                []
+            ]
 
 
 gallows : Html a

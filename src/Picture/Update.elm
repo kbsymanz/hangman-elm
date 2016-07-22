@@ -52,7 +52,7 @@ update msg model =
             let
                 newStep =
                     if model.animationStep + ms > 380
-                    then ms
+                    then 0
                     else model.animationStep + (ms / 100)
             in
                 ( { model | animationStep = newStep }, Cmd.none )
